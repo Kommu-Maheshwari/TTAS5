@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 const AddEmployee = () => {
 
   const [employee, setEmployee] = useState({
+    id:'',
     empid: '',
     name: '',
     dateofbirth: '',
@@ -21,6 +22,8 @@ const AddEmployee = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('Employee Data:', employee); // Debug: Log employee data
+
     axios.post('http://localhost:3000/auth/add_employee', employee)
       .then(result => {
         if (result.data.Status) {
@@ -37,20 +40,33 @@ const AddEmployee = () => {
   };
 
   return (
-    <div className='d-flex justify-content-center align-items-center h-75'>
+    <div className='d-flex justify-content-center align-items-center '>
       <div className='p-3 rounded w-25 border'>
         <h2>Add Employee</h2>
+        
+        
         <form className="row g-3 w-100" onSubmit={handleSubmit}>
+        
+        <div className="col-12">
+            <label htmlFor="inputnumber" className="form-label">Id</label>
+            <input type="text" className="form-control" id="inputNumber" placeholder='Enter ID'
+              onChange={(e) => setEmployee({ ...employee, id: e.target.value })} />
+          </div>
+          
           <div className="col-12">
             <label htmlFor="inputnumber" className="form-label">EmpId</label>
             <input type="text" className="form-control" id="inputNumber" placeholder='Enter ID'
               onChange={(e) => setEmployee({ ...employee, empid: e.target.value })} />
           </div>
+         
+         
           <div className="col-12">
-            <label htmlFor="inputName" className="form-label">Name</label>
+          <label htmlFor="inputName" className="form-label">Name</label>
             <input type="text" className="form-control" id="inputName" placeholder='Enter Name'
               onChange={(e) => setEmployee({ ...employee, name: e.target.value })} />
           </div>
+         
+         
           <div className="col-12">
             <label htmlFor="inputDateofbirth" className="form-label">DATEOFBIRTH</label>
             <input type="date" className="form-control" id="inputEmail4" placeholder='Enter date'

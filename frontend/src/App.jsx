@@ -33,7 +33,7 @@ function App() {
       <Route path='/dashboard/Employee' element={<Employee/>}></Route>
       <Route path='/dashboard/Filter' element={<Filter/>}></Route>
       <Route path='/dashboard/add_employee' element={<AddEmployee/>}></Route>
-      <Route path='/dashboard/edit_employee/:id' element={<EditEmployee/>}></Route>
+      <Route path='/dashboard/edit_employee/:empid' element={<EditEmployee/>}></Route>
       
       <Route path='/dashboard/applicant' element={<Applicant/>}></Route>
      

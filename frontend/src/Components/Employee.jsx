@@ -1,6 +1,6 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom"
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from "react-router-dom";
 
 const Employee = () => {
   const [employee, setEmployee] = useState([]);
@@ -9,12 +9,12 @@ const Employee = () => {
     axios.get('http://localhost:3000/auth/employee')
       .then(result => {
         if (result.data.Status) {
-          setEmployee(result.data.Result)
+          setEmployee(result.data.Result);
         } else {
-          alert(result.data.Error)
+          alert(result.data.Error);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   }, []);
 
   return (
@@ -42,31 +42,29 @@ const Employee = () => {
             </tr>
           </thead>
           <tbody>
-            {employee.map((employee, index) => {
-              return (
-                <tr key={employee.empid || index}>
-                  <td>{employee.empid}</td>
-                  <td>{employee.name}</td>
-                  <td>{employee.dateofbirth}</td>
-                  <td>{employee.religion}</td>
-                  <td>{employee.community}</td>
-                  <td>{employee.gender}</td>
-                  <td>{employee.maritalstatus}</td>
-                  <td>{employee.adhar}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.address}</td>
-                  <td>
-                    <Link to={'/dashboard/edit_employee/' + employee.empid} className="btn btn-info btn-sm me-2">Edit</Link>
-                    <button className="btn btn-warning btn-sm">Delete</button>
-                  </td>
-                </tr>
-              );
-            })}
+            {employee.map((employee, index) => (
+              <tr key={employee.empid || index}>
+                <td>{employee.empid}</td>
+                <td>{employee.name}</td>
+                <td>{employee.dateofbirth}</td>
+                <td>{employee.religion}</td>
+                <td>{employee.community}</td>
+                <td>{employee.gender}</td>
+                <td>{employee.maritalstatus}</td>
+                <td>{employee.adhar}</td>
+                <td>{employee.email}</td>
+                <td>{employee.address}</td>
+                <td>
+                  <Link to={`/dashboard/edit_employee/${employee.empid}`} className="btn btn-info btn-sm me-2">Edit</Link>
+                  <button className="btn btn-warning btn-sm">Delete</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
     </div>
-  )
+  );
 }
 
 export default Employee;

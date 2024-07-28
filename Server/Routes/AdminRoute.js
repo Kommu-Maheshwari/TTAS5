@@ -38,10 +38,11 @@ router.post('/applicantlogin', (req, res) => {
 });
 
 router.post('/add_employee', (req, res) => {
-  
-    console.log('Request Body:', req.body);  // Log the incoming request body
-    const sql = "INSERT INTO employee(empid, name, dateofbirth, religion, community, gender, maritalstatus, adhar, email, address) VALUES(?)";
+    console.log('Request Body:', req.body); // Log the incoming request body for debugging
+
+    const sql = "INSERT INTO employee (id, empid, name, dateofbirth, religion, community, gender, maritalstatus, adhar, email, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
     const values = [
+        req.body.id,
         req.body.empid,
         req.body.name,
         req.body.dateofbirth,
@@ -54,8 +55,11 @@ router.post('/add_employee', (req, res) => {
         req.body.address
     ];
 
-    con.query(sql, [values], (err, result) => {
-        if (err) return res.json({ Status: false, Error: "Query error" });
+    con.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Query Error:', err);
+            return res.json({ Status: false, Error: "Query error" });
+        }
         return res.json({ Status: true });
     });
 });
@@ -68,19 +72,27 @@ router.get('/employee', (req, res) => {
     });
 });
 
-router.get('/employee/:id', (req, res) => {
-    const id = req.params.id;
+// Fetch Employee Endpoint
+router.get('/employee/:empid', (req, res) => {
+    const empid = req.params.empid;
     const sql = "SELECT * FROM employee WHERE empid=?";
-    con.query(sql, [id], (err, result) => {
-        if (err) return res.json({ Status: false, Error: "Query error" + err });
+    console.log(`Fetching employee with ID: ${empid}`); // Debugging
+    con.query(sql, [empid], (err, result) => {
+        if (err) {
+            console.error('Query Error:', err);
+            return res.json({ Status: false, Error: "Query error: " + err });
+        }
+        console.log('Fetch Result:', result); // Debugging
         return res.json({ Status: true, Result: result });
     });
 });
 
-router.put('/edit_employee/:id', (req, res) => {
-    const id = req.params.id;
-    const sql = 'UPDATE employee SET name=?, dateofbirth=?, religion=?, community=?, maritalstatus=?, adhar=?, email=?, address=? WHERE empid=?';
+// Update Employee Endpoint
+router.put('/edit_employee/:empid', (req, res) => {
+    const empid = req.params.empid;
+    const sql = 'UPDATE employee SET id=?, name=?, dateofbirth=?, religion=?, community=?, maritalstatus=?, adhar=?, email=?, address=? WHERE empid=?';
     const values = [
+        req.body.id,
         req.body.name,
         req.body.dateofbirth,
         req.body.religion,
@@ -90,8 +102,13 @@ router.put('/edit_employee/:id', (req, res) => {
         req.body.email,
         req.body.address
     ];
-    con.query(sql, [...values, id], (err, result) => {
-        if (err) return res.json({ Status: false, Error: "Query error" + err });
+    console.log(`Updating employee with ID: ${empid}`, values); // Debugging
+    con.query(sql, [...values, empid], (err, result) => {
+        if (err) {
+            console.error('Query Error:', err);
+            return res.json({ Status: false, Error: "Query error: " + err });
+        }
+        console.log('Update Result:', result); // Debugging
         return res.json({ Status: true, Result: result });
     });
 });

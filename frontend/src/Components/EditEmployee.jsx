@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const EditEmployee = () => {
     const { empid } = useParams();
+    const navigate = useNavigate();
     const [employee, setEmployee] = useState({
+        id:'',
         empid: '',
         name: '',
         dateofbirth: '',
@@ -17,35 +19,45 @@ const EditEmployee = () => {
     });
 
     useEffect(() => {
-        // Fetch employee data for editing
-        axios.get('http://localhost:3000/auth/employee/' + empid)
-            .then(result => {
-                if (result.data && result.data.Result && result.data.Result.length > 0) {
-                    const data = result.data.Result[0];
-                    setEmployee({
-                        empid: data.empid || '',
-                        name: data.name || '',
-                        dateofbirth: data.dateofbirth || '',
-                        religion: data.religion || '',
-                        community: data.community || '',
-                        maritalstatus: data.maritalstatus || '',
-                        adhar: data.adhar || '',
-                        email: data.email || '',
-                        address: data.address || ''
-                    });
-                } else {
-                    console.error("No employee data found");
-                }
-            })
-            .catch(err => console.error(err));
+        if (empid) {
+            console.log('Fetching employee with ID:', empid); // Debugging
+            axios.get(`http://localhost:3000/auth/employee/${empid}`)
+                .then(result => {
+                    console.log('Fetch Result:', result.data);
+                    if (result.data && result.data.Result && result.data.Result.length > 0) {
+                        const data = result.data.Result[0];
+                        setEmployee({
+                            id:data.id ||'',
+                            empid: data.empid || '',
+                            name: data.name || '',
+                            dateofbirth: data.dateofbirth || '',
+                            religion: data.religion || '',
+                            community: data.community || '',
+                            maritalstatus: data.maritalstatus || '',
+                            adhar: data.adhar || '',
+                            email: data.email || '',
+                            address: data.address || ''
+                        });
+                    } else {
+                        console.error("No employee data found");
+                    }
+                })
+                .catch(err => console.error(err));
+        } else {
+            console.error("No empid provided");
+        }
     }, [empid]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put('http://localhost:3000/auth/edit_employee/' + empid, employee)
+        axios.put(`http://localhost:3000/auth/edit_employee/${empid}`, employee)
             .then(result => {
                 console.log(result.data);
-                // Optionally, you can redirect or perform other actions upon successful update
+                if (result.data.Status) {
+                    navigate('/dashboard/Employee'); // Navigate to employee dashboard on success
+                } else {
+                    alert(result.data.Error);
+                }
             })
             .catch(err => console.error(err));
     };
@@ -71,7 +83,7 @@ const EditEmployee = () => {
 
                     <div className="col-12">
                         <label htmlFor="inputDateofbirth" className="form-label">DATEOFBIRTH</label>
-                        <input type="date" className="form-control" id="inputEmail4" placeholder='Enter date'
+                        <input type="date" className="form-control" id="inputDateofbirth" placeholder='Enter date'
                             value={employee.dateofbirth}
                             onChange={(e) => setEmployee({ ...employee, dateofbirth: e.target.value })} />
                     </div>
